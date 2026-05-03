@@ -841,7 +841,7 @@
     container.className = "profile-card";
     container.innerHTML = `
       <div class="profile-header">
-        <div class="logo-placeholder"><span>Church<br>Logo</span></div>
+        <div class="logo-placeholder"><img src="logo.png" alt="Church Logo" onerror="this.remove()"><span>Church<br>Logo</span></div>
         <div>
           <p>${escapeHtml(state.settings.churchName)}</p>
           <h3>${escapeHtml(record.fullName)}</h3>
@@ -1181,7 +1181,7 @@
     $("#reportOutput").innerHTML = `
       <div class="report-header">
         <div class="report-brand">
-          <div class="logo-placeholder"><span>Church<br>Logo</span></div>
+          <div class="logo-placeholder"><img src="logo.png" alt="Church Logo" onerror="this.remove()"><span>Church<br>Logo</span></div>
           <div>
             <h4>${escapeHtml(state.settings.churchName)}</h4>
             <p class="helper-text">Church Membership Census System</p>
@@ -1437,7 +1437,7 @@
       <div class="report-output">
         <div class="report-header">
           <div class="report-brand">
-            <div class="logo-placeholder"><span>Church<br>Logo</span></div>
+            <div class="logo-placeholder"><img src="logo.png" alt="Church Logo" onerror="this.remove()"><span>Church<br>Logo</span></div>
             <div>
               <h4>${escapeHtml(state.settings.churchName)}</h4>
               <p class="helper-text">Church Membership Census System</p>

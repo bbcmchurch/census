@@ -253,13 +253,32 @@ Use **Clear All Data** carefully. It removes all saved census records from the c
 
 ## Replacing The Logo Placeholder
 
-The app currently displays a clean "Church Logo" placeholder. To replace it later, edit the logo placeholder area in `index.html` and insert an image element, for example:
+The app looks for this file in the project folder:
 
-```html
-<img src="logo.png" alt="Church Logo">
+```text
+logo.png
 ```
 
-Place the image file beside `index.html` or update the `src` path to match your folder structure.
+To replace the logo:
+
+1. Prepare your church logo as a PNG file.
+2. Rename it to `logo.png`.
+3. Place it in the same folder as `index.html`.
+4. Refresh the browser.
+
+Folder example:
+
+```text
+ChurchCensusApp/
+  index.html
+  registration.html
+  styles.css
+  app.js
+  registration.js
+  logo.png
+```
+
+The placeholder text appears only if `logo.png` is missing or cannot load.
 
 ## Troubleshooting
 
