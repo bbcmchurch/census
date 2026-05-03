@@ -1,0 +1,9 @@
+{
+  "name": "church-membership-census-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static church membership census management app for Bridge Builder's Christian Ministries.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

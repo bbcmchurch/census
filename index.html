@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Church Membership Census System</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-locked">
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="brand-block auth-brand">
+        <div class="logo-placeholder" aria-label="Church logo placeholder">
+          <span>Church<br>Logo</span>
+        </div>
+        <div>
+          <h1 class="church-name" data-church-name>Bridge Builder's Christian Ministries</h1>
+          <p>Church Membership Census System</p>
+        </div>
+      </div>
+      <form id="adminLoginForm" class="auth-form">
+        <h2>Admin Access</h2>
+        <p>Enter the admin password to view census records, reports, settings, and exports.</p>
+        <label>
+          <span>Password</span>
+          <input id="adminPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <div class="form-errors" id="loginErrors" role="alert" aria-live="polite"></div>
+        <button class="button primary" type="submit">Unlock Admin App</button>
+        <p class="helper-text">First-time password: <strong>admin123</strong>. Change it in Settings after logging in.</p>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block">
+        <div class="logo-placeholder" aria-label="Church logo placeholder">
+          <span>Church<br>Logo</span>
+        </div>
+        <div>
+          <h1 class="church-name" data-church-name>Bridge Builder's Christian Ministries</h1>
+          <p>Church Membership Census System</p>
+        </div>
+      </div>
+
+      <nav class="app-nav" aria-label="Main navigation">
+        <button class="nav-link active" type="button" data-section="dashboard">Dashboard</button>
+        <button class="nav-link" type="button" data-section="register">Register Member</button>
+        <button class="nav-link" type="button" data-section="members">Members Table</button>
+        <button class="nav-link" type="button" data-section="profile">Individual View</button>
+        <button class="nav-link" type="button" data-section="reports">Reports</button>
+        <button class="nav-link" type="button" data-section="importExport">Import / Export</button>
+        <button class="nav-link" type="button" data-section="settings">Settings</button>
+      </nav>
+
+      <div class="storage-notice">
+        <strong>Local browser storage</strong>
+        <p>Your data is saved in this browser only. Please export regular CSV backups to avoid data loss.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation">Menu</button>
+        <div>
+          <p class="eyebrow">Bridge Builder's Christian Ministries</p>
+          <h2 id="sectionTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <a class="button ghost" href="registration.html" target="_blank" rel="noopener">Public Form</a>
+          <button class="button ghost" type="button" id="quickBackupButton">Backup Now</button>
+          <button class="button primary" type="button" data-section-target="register">New Record</button>
+          <button class="button ghost" type="button" id="logoutButton">Lock</button>
+        </div>
+      </header>
+
+      <section class="section active" id="dashboardSection" data-title="Dashboard">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Live census overview</p>
+            <h3>Dashboard</h3>
+          </div>
+          <div class="action-row">
+            <button class="button secondary" id="exportDashboardButton" type="button">Export Dashboard CSV</button>
+            <button class="button ghost" id="printDashboardButton" type="button">Print Dashboard Report</button>
+          </div>
+        </div>
+
+        <div class="summary-grid" id="dashboardCards"></div>
+
+        <div class="dashboard-grid">
+          <div class="panel">
+            <h4>Members by Membership Status</h4>
+            <div class="chart-list" id="statusChart"></div>
+          </div>
+          <div class="panel">
+            <h4>People by Gender</h4>
+            <div class="chart-list" id="genderChart"></div>
+          </div>
+          <div class="panel">
+            <h4>People by Age Group</h4>
+            <div class="chart-list" id="ageChart"></div>
+          </div>
+          <div class="panel">
+            <h4>Members by Ministry</h4>
+            <div class="chart-list" id="ministryChart"></div>
+          </div>
+          <div class="panel">
+            <h4>Members by Civil Status</h4>
+            <div class="chart-list" id="civilChart"></div>
+          </div>
+          <div class="panel">
+            <h4>Households / Family Groups</h4>
+            <div class="chart-list" id="householdChart"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="registerSection" data-title="Register Member">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Census record</p>
+            <h3 id="formTitle">Register Member</h3>
+          </div>
+          <button class="button ghost" id="resetFormButton" type="button">Reset Form</button>
+        </div>
+
+        <div class="privacy-box">
+          <strong>Privacy notice</strong>
+          <p>This form collects personal information for church membership and pastoral care records of Bridge Builder's Christian Ministries. Data should be handled only by authorized church personnel.</p>
+        </div>
+
+        <form id="memberForm" novalidate>
+          <input type="hidden" id="editingRecordId">
+
+          <fieldset>
+            <legend>Personal Information</legend>
+            <div class="form-grid">
+              <label>
+                <span>Member ID / Census ID</span>
+                <input id="memberId" name="memberId" type="text" readonly>
+              </label>
+              <label>
+                <span>Full Name <b aria-hidden="true">*</b></span>
+                <input id="fullName" name="fullName" type="text" required autocomplete="name">
+              </label>
+              <label>
+                <span>Nickname / Preferred Name</span>
+                <input id="nickname" name="nickname" type="text">
+              </label>
+              <label>
+                <span>Birthday <b aria-hidden="true">*</b></span>
+                <input id="birthday" name="birthday" type="date" required>
+              </label>
+              <label>
+                <span>Age</span>
+                <input id="age" name="age" type="number" readonly>
+              </label>
+              <label>
+                <span>Gender <b aria-hidden="true">*</b></span>
+                <select id="gender" name="gender" required>
+                  <option value="">Select gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </label>
+              <label>
+                <span>Civil Status</span>
+                <select id="civilStatus" name="civilStatus">
+                  <option value="">Select civil status</option>
+                  <option>Single</option>
+                  <option>Married</option>
+                  <option>Widowed</option>
+                  <option>Separated</option>
+                  <option>Divorced</option>
+                </select>
+              </label>
+              <label>
+                <span>Wedding Anniversary Date</span>
+                <input id="anniversary" name="anniversary" type="date">
+              </label>
+              <label>
+                <span>Spouse Name</span>
+                <input id="spouseName" name="spouseName" type="text">
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Address and Contact</legend>
+            <div class="form-grid">
+              <label class="wide">
+                <span>Complete Address <b aria-hidden="true">*</b></span>
+                <input id="address" name="address" type="text" required autocomplete="street-address">
+              </label>
+              <label>
+                <span>Barangay</span>
+                <input id="barangay" name="barangay" type="text">
+              </label>
+              <label>
+                <span>City <b aria-hidden="true">*</b></span>
+                <input id="city" name="city" type="text" required autocomplete="address-level2">
+              </label>
+              <label>
+                <span>Province <b aria-hidden="true">*</b></span>
+                <input id="province" name="province" type="text" required autocomplete="address-level1">
+              </label>
+              <label>
+                <span>Mobile Number <b aria-hidden="true">*</b></span>
+                <input id="mobile" name="mobile" type="tel" required autocomplete="tel" placeholder="+63 900 000 0000">
+              </label>
+              <label>
+                <span>Email Address</span>
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com">
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Church Membership</legend>
+            <div class="form-grid">
+              <label>
+                <span>Membership Status <b aria-hidden="true">*</b></span>
+                <select id="membershipStatus" name="membershipStatus" required>
+                  <option value="">Select status</option>
+                  <option>Member</option>
+                  <option>Regular Attendee</option>
+                  <option>Visitor</option>
+                  <option>Inactive</option>
+                  <option>Transferred</option>
+                  <option>Deceased</option>
+                </select>
+              </label>
+              <label>
+                <span>Baptism Status</span>
+                <select id="baptismStatus" name="baptismStatus">
+                  <option value="">Select status</option>
+                  <option>Baptized</option>
+                  <option>Not Baptized</option>
+                  <option>Scheduled</option>
+                  <option>Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span>Date Joined / First Visit Date <b aria-hidden="true">*</b></span>
+                <input id="dateJoined" name="dateJoined" type="date" required>
+              </label>
+              <label>
+                <span>Ministry Involvement</span>
+                <input id="ministry" name="ministry" type="text" placeholder="Worship, Youth, Ushering">
+              </label>
+              <label>
+                <span>Role / Service Label</span>
+                <select id="role" name="role">
+                  <option value="">Select role</option>
+                  <option>Member</option>
+                  <option>Leader</option>
+                  <option>Pastor</option>
+                  <option>Volunteer</option>
+                  <option>Worker</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label>
+                <span>Cell Group / Bible Study Group</span>
+                <input id="cellGroup" name="cellGroup" type="text">
+              </label>
+              <label>
+                <span>Household / Family Group Name</span>
+                <input id="household" name="household" type="text">
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Emergency Contact and Notes</legend>
+            <div class="form-grid">
+              <label>
+                <span>Emergency Contact Name</span>
+                <input id="emergencyName" name="emergencyName" type="text">
+              </label>
+              <label>
+                <span>Emergency Contact Number</span>
+                <input id="emergencyMobile" name="emergencyMobile" type="tel">
+              </label>
+              <label class="wide">
+                <span>Notes / Remarks</span>
+                <textarea id="notes" name="notes" rows="4"></textarea>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Family Members / Household</legend>
+            <div class="table-toolbar">
+              <p class="helper-text">Add church members and non-members in the same household, including spouse, children, parents, relatives, and other household members.</p>
+              <button class="button secondary" id="addFamilyMemberButton" type="button">Add Family Member</button>
+            </div>
+            <div class="family-list" id="familyList"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Consent</legend>
+            <label class="checkbox-line">
+              <input id="consent" name="consent" type="checkbox" required>
+              <span>I confirm that this information may be used for church membership records and ministry communication.</span>
+            </label>
+          </fieldset>
+
+          <div class="form-errors" id="formErrors" role="alert" aria-live="polite"></div>
+          <div class="form-actions">
+            <button class="button primary" type="submit" data-after-save="table">Save Record</button>
+            <button class="button secondary" type="submit" data-after-save="addAnother">Save and Add Another</button>
+            <button class="button ghost" type="submit" data-after-save="profile">Save and View Profile</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="section" id="membersSection" data-title="Members Table">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Search, filter, and manage</p>
+            <h3>Members Table</h3>
+          </div>
+          <div class="action-row">
+            <button class="button secondary" id="bulkExportButton" type="button">Export Selected</button>
+            <button class="button ghost" id="exportVisibleButton" type="button">Export Visible</button>
+          </div>
+        </div>
+
+        <div class="filters-panel">
+          <label class="search-box">
+            <span>Search records</span>
+            <input id="tableSearch" type="search" placeholder="Name, address, mobile, email, household, ministry">
+          </label>
+          <div class="filter-grid">
+            <label>
+              <span>Gender</span>
+              <select id="filterGender">
+                <option value="">All</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </label>
+            <label>
+              <span>Membership Status</span>
+              <select id="filterStatus">
+                <option value="">All</option>
+                <option>Member</option>
+                <option>Regular Attendee</option>
+                <option>Visitor</option>
+                <option>Inactive</option>
+                <option>Transferred</option>
+                <option>Deceased</option>
+              </select>
+            </label>
+            <label>
+              <span>Age Group</span>
+              <select id="filterAgeGroup">
+                <option value="">All</option>
+                <option>Children</option>
+                <option>Youth</option>
+                <option>Young Adult</option>
+                <option>Adult</option>
+                <option>Senior</option>
+              </select>
+            </label>
+            <label>
+              <span>Civil Status</span>
+              <select id="filterCivilStatus">
+                <option value="">All</option>
+                <option>Single</option>
+                <option>Married</option>
+                <option>Widowed</option>
+                <option>Separated</option>
+                <option>Divorced</option>
+              </select>
+            </label>
+            <label>
+              <span>Ministry</span>
+              <input id="filterMinistry" type="text" placeholder="Any ministry">
+            </label>
+            <label>
+              <span>Birthday Month</span>
+              <select id="filterBirthdayMonth" data-month-select>
+                <option value="">All</option>
+              </select>
+            </label>
+            <label>
+              <span>Anniversary Month</span>
+              <select id="filterAnniversaryMonth" data-month-select>
+                <option value="">All</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="table-meta">
+          <span id="visibleCount">0 visible records</span>
+          <button class="text-button" id="clearFiltersButton" type="button">Clear filters</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="membersTable">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="selectAllRows" aria-label="Select all visible rows"></th>
+                <th><button type="button" data-sort="memberId">Member ID</button></th>
+                <th><button type="button" data-sort="fullName">Full Name</button></th>
+                <th><button type="button" data-sort="membershipStatus">Status</button></th>
+                <th><button type="button" data-sort="age">Age</button></th>
+                <th><button type="button" data-sort="gender">Gender</button></th>
+                <th><button type="button" data-sort="mobile">Mobile</button></th>
+                <th><button type="button" data-sort="household">Household</button></th>
+                <th><button type="button" data-sort="ministry">Ministry</button></th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="membersTableBody"></tbody>
+          </table>
+          <div class="empty-state hidden" id="tableEmptyState">
+            <h4>No records found</h4>
+            <p>Add a member record or adjust the current filters.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="profileSection" data-title="Individual View">
+        <div id="profileContent" class="profile-empty">
+          <h3>No profile selected</h3>
+          <p>Open a member profile from the Members Table or after saving a record.</p>
+          <button class="button primary" type="button" data-section-target="members">Go to Members Table</button>
+        </div>
+      </section>
+
+      <section class="section" id="reportsSection" data-title="Reports">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Generate and export summaries</p>
+            <h3>Reports</h3>
+          </div>
+          <div class="action-row">
+            <button class="button secondary" id="exportReportButton" type="button">Export Report CSV</button>
+            <button class="button ghost" id="printReportButton" type="button">Print Report</button>
+          </div>
+        </div>
+
+        <div class="filters-panel">
+          <div class="filter-grid">
+            <label>
+              <span>Report Type</span>
+              <select id="reportType">
+                <option value="total">Total Membership Report</option>
+                <option value="active">Active Members Report</option>
+                <option value="inactive">Inactive Members Report</option>
+                <option value="visitors">Visitors Report</option>
+                <option value="attendees">Regular Attendees Report</option>
+                <option value="gender">Gender Summary Report</option>
+                <option value="age">Age Group Summary Report</option>
+                <option value="household">Household / Family Summary Report</option>
+                <option value="birthdays">Birthday Celebrants Report</option>
+                <option value="anniversaries">Wedding Anniversary Report</option>
+                <option value="ministry">Ministry Involvement Report</option>
+                <option value="new">New Members / First-Time Visitors Report</option>
+                <option value="missing">Members with Missing Information Report</option>
+              </select>
+            </label>
+            <label>
+              <span>Date From</span>
+              <input id="reportDateFrom" type="date">
+            </label>
+            <label>
+              <span>Date To</span>
+              <input id="reportDateTo" type="date">
+            </label>
+            <label>
+              <span>Membership Status</span>
+              <select id="reportStatus">
+                <option value="">All</option>
+                <option>Member</option>
+                <option>Regular Attendee</option>
+                <option>Visitor</option>
+                <option>Inactive</option>
+                <option>Transferred</option>
+                <option>Deceased</option>
+              </select>
+            </label>
+            <label>
+              <span>Gender</span>
+              <select id="reportGender">
+                <option value="">All</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </label>
+            <label>
+              <span>Age Group</span>
+              <select id="reportAgeGroup">
+                <option value="">All</option>
+                <option>Children</option>
+                <option>Youth</option>
+                <option>Young Adult</option>
+                <option>Adult</option>
+                <option>Senior</option>
+              </select>
+            </label>
+            <label>
+              <span>Ministry</span>
+              <input id="reportMinistry" type="text" placeholder="Any ministry">
+            </label>
+            <label>
+              <span>Birthday Month</span>
+              <select id="reportBirthdayMonth" data-month-select>
+                <option value="">All</option>
+              </select>
+            </label>
+            <label>
+              <span>Anniversary Month</span>
+              <select id="reportAnniversaryMonth" data-month-select>
+                <option value="">All</option>
+              </select>
+            </label>
+            <label>
+              <span>Household / Family Group</span>
+              <input id="reportHousehold" type="text" placeholder="Any household">
+            </label>
+          </div>
+          <div class="action-row">
+            <button class="button primary" id="generateReportButton" type="button">Generate Report</button>
+            <button class="button ghost" id="resetReportFiltersButton" type="button">Reset Filters</button>
+          </div>
+        </div>
+
+        <div id="reportOutput" class="report-output"></div>
+      </section>
+
+      <section class="section" id="importExportSection" data-title="Import / Export">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">CSV backup and restore</p>
+            <h3>Import / Export</h3>
+          </div>
+        </div>
+
+        <div class="warning-banner">
+          Your data is saved in this browser only. Please export regular CSV backups to avoid data loss.
+        </div>
+
+        <div class="utility-grid">
+          <div class="panel">
+            <h4>Export Records</h4>
+            <p>Download Excel-friendly CSV files. Full backup includes family member JSON inside each member row.</p>
+            <div class="stacked-actions">
+              <button class="button primary" id="exportAllMembersButton" type="button">Export members.csv</button>
+              <button class="button secondary" id="exportFamilyMembersButton" type="button">Export family_members.csv</button>
+              <button class="button secondary" id="exportHouseholdsButton" type="button">Export households.csv</button>
+              <button class="button ghost" id="exportFullBackupButton" type="button">Export full_backup.csv</button>
+              <button class="button ghost" id="saveBackupFileButton" type="button">Save Backup File</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h4>Import CSV Backup</h4>
+            <p>Import a full backup or members CSV. Duplicates are skipped using Member ID and Full Name + Birthday + Mobile Number.</p>
+            <div class="file-stack">
+              <label>
+                <span>Members or full backup CSV</span>
+                <input id="membersImportFile" type="file" accept=".csv,text/csv">
+              </label>
+              <label>
+                <span>Optional family_members.csv</span>
+                <input id="familyImportFile" type="file" accept=".csv,text/csv">
+              </label>
+            </div>
+            <div class="action-row">
+              <button class="button primary" id="importCsvButton" type="button">Import CSV</button>
+            </div>
+            <div id="importResults" class="import-results" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="settingsSection" data-title="Settings">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Application preferences</p>
+            <h3>Settings</h3>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <div class="panel">
+            <h4>Church Identity</h4>
+            <label>
+              <span>Church Name</span>
+              <input id="settingsChurchName" type="text" value="Bridge Builder's Christian Ministries">
+            </label>
+            <p class="helper-text">The logo placeholder can be replaced later by editing the logo area in index.html or by placing an image inside the placeholder.</p>
+            <button class="button primary" id="saveSettingsButton" type="button">Save Settings</button>
+          </div>
+
+          <div class="panel">
+            <h4>Display</h4>
+            <label class="checkbox-line">
+              <input id="darkModeToggle" type="checkbox">
+              <span>Use muted dark mode</span>
+            </label>
+            <label class="checkbox-line">
+              <input id="compactModeToggle" type="checkbox">
+              <span>Use compact table mode</span>
+            </label>
+            <button class="button ghost" id="resetThemeButton" type="button">Reset Theme</button>
+          </div>
+
+          <div class="panel">
+            <h4>Admin Access</h4>
+            <p class="helper-text">This is a browser-side access lock for the static app. Use a backend if you need strong authentication.</p>
+            <label>
+              <span>Current Password</span>
+              <input id="currentPassword" type="password" autocomplete="current-password">
+            </label>
+            <label>
+              <span>New Password</span>
+              <input id="newPassword" type="password" autocomplete="new-password">
+            </label>
+            <label>
+              <span>Confirm New Password</span>
+              <input id="confirmNewPassword" type="password" autocomplete="new-password">
+            </label>
+            <button class="button primary" id="changePasswordButton" type="button">Change Password</button>
+          </div>
+
+          <div class="panel">
+            <h4>Public Registration Form</h4>
+            <p class="helper-text">Share this page when someone should only register and should not see records, reports, imports, exports, or settings.</p>
+            <label>
+              <span>Registration Form URL</span>
+              <input id="publicRegistrationUrl" type="text" readonly>
+            </label>
+            <div class="stacked-actions">
+              <button class="button secondary" id="openPublicRegistrationButton" type="button">Open Public Form</button>
+              <button class="button ghost" id="copyPublicRegistrationButton" type="button">Copy Link</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h4>Data Backup</h4>
+            <p id="lastBackupText">No backup recorded yet.</p>
+            <div class="stacked-actions">
+              <button class="button primary" id="settingsExportButton" type="button">Export All Data</button>
+              <button class="button secondary" id="settingsImportButton" type="button">Import Backup</button>
+              <button class="button danger" id="clearAllDataButton" type="button">Clear All Data</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <div class="modal-backdrop hidden" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="modal">
+      <h3 id="confirmTitle">Confirm Action</h3>
+      <p id="confirmMessage">Are you sure?</p>
+      <div class="modal-actions">
+        <button class="button ghost" id="cancelConfirmButton" type="button">Cancel</button>
+        <button class="button danger" id="acceptConfirmButton" type="button">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

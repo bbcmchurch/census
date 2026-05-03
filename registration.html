@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membership Registration - Bridge Builder's Christian Ministries</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="public-page">
+  <header class="public-header">
+    <div class="public-header-inner">
+      <div class="logo-placeholder" aria-label="Church logo placeholder">
+        <span>Church<br>Logo</span>
+      </div>
+      <div>
+        <h1>Bridge Builder's Christian Ministries</h1>
+        <p>Church Membership Census Registration</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="public-main">
+    <div class="privacy-box">
+      <strong>Privacy notice</strong>
+      <p>This form collects personal information for church membership and pastoral care records of Bridge Builder's Christian Ministries. Data should be handled only by authorized church personnel.</p>
+    </div>
+
+    <div class="warning-banner">
+      This public form only collects a registration entry in the browser where it is submitted. If this page is shared to another device, that device keeps its own local copy unless a backend collection system is added.
+    </div>
+
+    <div class="public-success" id="publicSuccess" role="status" aria-live="polite">
+      Registration submitted. Thank you.
+    </div>
+
+    <form id="publicRegistrationForm" novalidate>
+      <fieldset>
+        <legend>Personal Information</legend>
+        <div class="form-grid">
+          <label>
+            <span>Member ID / Census ID</span>
+            <input id="memberId" name="memberId" type="text" readonly>
+          </label>
+          <label>
+            <span>Full Name <b aria-hidden="true">*</b></span>
+            <input id="fullName" name="fullName" type="text" required autocomplete="name">
+          </label>
+          <label>
+            <span>Nickname / Preferred Name</span>
+            <input id="nickname" name="nickname" type="text">
+          </label>
+          <label>
+            <span>Birthday <b aria-hidden="true">*</b></span>
+            <input id="birthday" name="birthday" type="date" required>
+          </label>
+          <label>
+            <span>Age</span>
+            <input id="age" name="age" type="number" readonly>
+          </label>
+          <label>
+            <span>Gender <b aria-hidden="true">*</b></span>
+            <select id="gender" name="gender" required>
+              <option value="">Select gender</option>
+              <option>Male</option>
+              <option>Female</option>
+            </select>
+          </label>
+          <label>
+            <span>Civil Status</span>
+            <select id="civilStatus" name="civilStatus">
+              <option value="">Select civil status</option>
+              <option>Single</option>
+              <option>Married</option>
+              <option>Widowed</option>
+              <option>Separated</option>
+              <option>Divorced</option>
+            </select>
+          </label>
+          <label>
+            <span>Wedding Anniversary Date</span>
+            <input id="anniversary" name="anniversary" type="date">
+          </label>
+          <label>
+            <span>Spouse Name</span>
+            <input id="spouseName" name="spouseName" type="text">
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Address and Contact</legend>
+        <div class="form-grid">
+          <label class="wide">
+            <span>Complete Address <b aria-hidden="true">*</b></span>
+            <input id="address" name="address" type="text" required autocomplete="street-address">
+          </label>
+          <label>
+            <span>Barangay</span>
+            <input id="barangay" name="barangay" type="text">
+          </label>
+          <label>
+            <span>City <b aria-hidden="true">*</b></span>
+            <input id="city" name="city" type="text" required autocomplete="address-level2">
+          </label>
+          <label>
+            <span>Province <b aria-hidden="true">*</b></span>
+            <input id="province" name="province" type="text" required autocomplete="address-level1">
+          </label>
+          <label>
+            <span>Mobile Number <b aria-hidden="true">*</b></span>
+            <input id="mobile" name="mobile" type="tel" required autocomplete="tel" placeholder="+63 900 000 0000">
+          </label>
+          <label>
+            <span>Email Address</span>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="name@example.com">
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Church Membership</legend>
+        <div class="form-grid">
+          <label>
+            <span>Membership Status <b aria-hidden="true">*</b></span>
+            <select id="membershipStatus" name="membershipStatus" required>
+              <option value="">Select status</option>
+              <option>Member</option>
+              <option>Regular Attendee</option>
+              <option>Visitor</option>
+              <option>Inactive</option>
+              <option>Transferred</option>
+              <option>Deceased</option>
+            </select>
+          </label>
+          <label>
+            <span>Baptism Status</span>
+            <select id="baptismStatus" name="baptismStatus">
+              <option value="">Select status</option>
+              <option>Baptized</option>
+              <option>Not Baptized</option>
+              <option>Scheduled</option>
+              <option>Unknown</option>
+            </select>
+          </label>
+          <label>
+            <span>Date Joined / First Visit Date <b aria-hidden="true">*</b></span>
+            <input id="dateJoined" name="dateJoined" type="date" required>
+          </label>
+          <label>
+            <span>Ministry Involvement</span>
+            <input id="ministry" name="ministry" type="text" placeholder="Worship, Youth, Ushering">
+          </label>
+          <label>
+            <span>Role / Service Label</span>
+            <select id="role" name="role">
+              <option value="">Select role</option>
+              <option>Member</option>
+              <option>Leader</option>
+              <option>Pastor</option>
+              <option>Volunteer</option>
+              <option>Worker</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
+            <span>Cell Group / Bible Study Group</span>
+            <input id="cellGroup" name="cellGroup" type="text">
+          </label>
+          <label>
+            <span>Household / Family Group Name</span>
+            <input id="household" name="household" type="text">
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Emergency Contact and Notes</legend>
+        <div class="form-grid">
+          <label>
+            <span>Emergency Contact Name</span>
+            <input id="emergencyName" name="emergencyName" type="text">
+          </label>
+          <label>
+            <span>Emergency Contact Number</span>
+            <input id="emergencyMobile" name="emergencyMobile" type="tel">
+          </label>
+          <label class="wide">
+            <span>Notes / Remarks</span>
+            <textarea id="notes" name="notes" rows="4"></textarea>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Family Members / Household</legend>
+        <div class="table-toolbar">
+          <p class="helper-text">Add church members and non-members in the same household.</p>
+          <button class="button secondary" id="addFamilyMemberButton" type="button">Add Family Member</button>
+        </div>
+        <div class="family-list" id="familyList"></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Consent</legend>
+        <label class="checkbox-line">
+          <input id="consent" name="consent" type="checkbox" required>
+          <span>I confirm that this information may be used for church membership records and ministry communication.</span>
+        </label>
+      </fieldset>
+
+      <div class="form-errors" id="formErrors" role="alert" aria-live="polite"></div>
+      <div class="form-actions">
+        <button class="button primary" type="submit">Submit Registration</button>
+        <button class="button ghost" id="resetPublicFormButton" type="button">Reset Form</button>
+      </div>
+    </form>
+  </main>
+
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="registration.js"></script>
+</body>
+</html>
